@@ -83,7 +83,7 @@ function showModal(ev) {
   document.getElementById('modal-time').textContent = fmtTime(ev.time);
   modalOverlay.classList.add('show');
   clearTimeout(modalTimer);
-  modalTimer = setTimeout(() => modalOverlay.classList.remove('show'), 6000);
+  modalTimer = setTimeout(() => modalOverlay.classList.remove('show'), 15000);
 }
 
 document.getElementById('modal-close').addEventListener('click', () => {
