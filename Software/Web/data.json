@@ -1,0 +1,94 @@
+{
+  "veripass": {
+    "logs": {
+      "session_1": {
+        "Timestamp": "2026-06-19T05:48:12",
+        "Gate": 1,
+        "Card_ID": "CARD_001",
+        "Name": "이다영",
+        "Card_Type": "adult",
+        "Status": "normal",
+        "Gender": "female",
+        "Age": 24,
+        "Count": 1
+      },
+      "session_2": {
+        "Timestamp": "2026-06-19T06:15:03",
+        "Gate": 2,
+        "Card_ID": "CARD_003",
+        "Name": "김민재",
+        "Card_Type": "teen",
+        "Status": "normal",
+        "Gender": "male",
+        "Age": 15,
+        "Count": 0
+      },
+      "session_3": {
+        "Timestamp": "2026-06-19T07:32:41",
+        "Gate": 3,
+        "Card_ID": "CARD_002",
+        "Name": "이철수",
+        "Card_Type": "senior",
+        "Status": "normal",
+        "Gender": "male",
+        "Age": 70,
+        "Count": 0
+      },
+      "session_4": {
+        "Timestamp": "2026-06-19T08:05:55",
+        "Gate": 2,
+        "Card_ID": "CARD_005",
+        "Name": "박준영",
+        "Card_Type": "adult",
+        "Status": "suspect",
+        "Gender": "male",
+        "Age": 45,
+        "Count": 3
+      },
+      "session_5": {
+        "Timestamp": "2026-06-19T08:41:09",
+        "Gate": 4,
+        "Card_ID": "CARD_004",
+        "Name": "정가은",
+        "Card_Type": "adult",
+        "Status": "normal",
+        "Gender": "female",
+        "Age": 22,
+        "Count": 0
+      },
+      "session_6": {
+        "Timestamp": "2026-06-19T09:12:33",
+        "Gate": 1,
+        "Card_ID": "CARD_006",
+        "Name": "정시우",
+        "Card_Type": "adult",
+        "Status": "suspect",
+        "Gender": "male",
+        "Age": 28,
+        "Count": 2
+      },
+      "session_7": {
+        "Timestamp": "2026-06-19T10:06:18",
+        "Gate": 3,
+        "Card_ID": "CARD_007",
+        "Name": "윤서아",
+        "Card_Type": "adult",
+        "Status": "normal",
+        "Gender": "female",
+        "Age": 24,
+        "Count": 0
+      },
+      "session_8": {
+        "Timestamp": "2026-06-19T11:20:47",
+        "Gate": 4,
+        "Card_ID": "CARD_008",
+        "Name": "한지민",
+        "Card_Type": "adult",
+        "Status": "normal",
+        "Gender": "female",
+        "Age": 22,
+        "Count": 0
+      }
+    }
+  }
+}

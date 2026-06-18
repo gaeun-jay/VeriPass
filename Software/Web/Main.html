@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VeriPass 관제 대시보드</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- 헤더 -->
+  <div class="header">
+    <div class="header-left">
+      <div class="brand-logos">
+        <img class="logo-img" src="images/veripass-logo.png" alt="VeriPass" />
+        <span class="logo-x">×</span>
+        <img class="korail-logo" src="images/korail-logo.png" alt="KORAIL" />
+      </div>
+    </div>
+    <div class="header-title-center">
+      <p class="title">관제 대시보드</p>
+      <p class="subtitle">서울 4호선 성신여대입구역</p>
+    </div>
+    <div class="header-right">
+      <a href="Fines.html" class="nav-link">과징금 조회</a>
+      <span class="clock" id="clock"></span>
+      <span class="badge badge-blue">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M5 12.5a11 11 0 0 1 14 0"/><path d="M8.5 16a6 6 0 0 1 7 0"/><path d="M12 19.5h.01"/></svg>
+        RTDB 연결됨
+      </span>
+    </div>
+  </div>
+
+  <!-- 통계 카드 -->
+  <div class="stats-grid">
+    <div class="stat stat-blue">
+      <p class="stat-label">
+        <img src="images/gate.svg" alt="" style="width:14px;height:14px;object-fit:contain;" />
+        총 태깅
+      </p>
+      <p class="stat-value" id="stat-total">0</p>
+    </div>
+    <div class="stat stat-warn">
+      <p class="stat-label">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 2.5 17.3a1.5 1.5 0 0 0 1.3 2.3h16.4a1.5 1.5 0 0 0 1.3-2.3L13.7 3.9a1.5 1.5 0 0 0-2.6 0Z"/></svg>
+        의심 건수
+      </p>
+      <p class="stat-value" id="stat-fraud">0</p>
+    </div>
+    <div class="stat stat-amber">
+      <p class="stat-label">
+        <svg class="icon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        차단 게이트
+      </p>
+      <p class="stat-value" id="stat-locked">0</p>
+    </div>
+    <div class="stat stat-green">
+      <p class="stat-label">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M5 12.5 9.5 17 19 7.5"/></svg>
+        정상 통과율
+      </p>
+      <p class="stat-value" id="stat-rate">—</p>
+    </div>
+  </div>
+
+  <!-- 개찰구 + 실시간 알림 -->
+  <div class="main-grid">
+    <div class="card">
+      <div class="card-head">
+        <p class="card-title">개찰구 현황</p>
+        <span class="card-meta">총 4개</span>
+      </div>
+      <div id="gates-grid" class="gates-grid"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <p class="card-title">통과 기록</p>
+        <span class="card-meta" id="record-count">0건</span>
+      </div>
+      <div id="alerts-list" class="list-scroll"></div>
+    </div>
+  </div>
+
+  <!-- 시간대별 바 차트 -->
+  <div class="card" style="margin-bottom: 14px;">
+    <div class="card-head">
+      <p class="card-title">시간대별 태깅 현황</p>
+      <span class="card-meta">오늘</span>
+    </div>
+    <div id="bar-chart" class="bar-chart"></div>
+    <div id="bar-labels" class="bar-labels"></div>
+  </div>
+
+  <!-- 이력 누적 조회 -->
+  <div class="card">
+    <div class="card-head">
+      <p class="card-title">이력 누적 조회</p>
+      <div class="filters">
+        <select class="kr-select" id="filter-gate">
+          <option value="all">전체 게이트</option>
+        </select>
+        <select class="kr-select" id="filter-type">
+          <option value="all">전체 유형</option>
+          <option value="일반">일반카드</option>
+          <option value="경로우대">경로우대카드</option>
+          <option value="청소년">청소년카드</option>
+          <option value="장애인">장애인카드</option>
+        </select>
+      </div>
+    </div>
+    <div class="history-wrap">
+      <table class="history">
+        <thead>
+          <tr>
+            <th>시각</th>
+            <th>게이트</th>
+            <th>유형</th>
+            <th>사유</th>
+            <th style="text-align: right;">상태</th>
+          </tr>
+        </thead>
+        <tbody id="history-body"></tbody>
+      </table>
+      <p id="history-empty" class="history-empty" style="display: none;">조건에 맞는 이력이 없습니다</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- 부정승차 의심 발생 모달 -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-icon">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 2.5 17.3a1.5 1.5 0 0 0 1.3 2.3h16.4a1.5 1.5 0 0 0 1.3-2.3L13.7 3.9a1.5 1.5 0 0 0-2.6 0Z"/></svg>
+    </div>
+    <p class="modal-heading">부정승차 의심 발생</p>
+    <p class="modal-gate" id="modal-gate"></p>
+    <div>
+      <div class="modal-row"><span class="k">카드 종류</span><span class="v" id="modal-card"></span></div>
+      <div class="modal-row"><span class="k">사유</span><span class="v danger" id="modal-reason"></span></div>
+      <div class="modal-row"><span class="k">발생 시각</span><span class="v" id="modal-time"></span></div>
+      <div class="modal-row"><span class="k">게이트 상태</span><span class="v danger">잠금 유지</span></div>
+    </div>
+    <button class="modal-close-btn" id="modal-close">확인</button>
+  </div>
+</div>
+
+<script src="firebase.js"></script>
+<script src="icons.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
