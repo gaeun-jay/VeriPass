@@ -207,7 +207,7 @@ function subscribeToGateResults() {
             time: new Date(result.timestamp)
           });
 
-          // 게이트 차단 표시 (8초 후 해제)
+          // 게이트 차단 표시 (15초 후 해제)
           if (gate >= 1 && gate <= GATES) {
             gateStates[gate - 1] = 'danger';
             renderGates();
@@ -216,7 +216,7 @@ function subscribeToGateResults() {
               gateStates[gate - 1] = 'ok';
               renderGates();
               updateStats();
-            }, 8000);
+            }, 15000);
           }
         }
       });
