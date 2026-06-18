@@ -16,6 +16,7 @@ const LOGS_POLL_MS = 3000;  // logs 폴링(기록/이력/통계)
 const gateStates = Array(GATES).fill('ok');
 let allLogs = [];           // 정규화된 통과 기록 (최신순)
 let modalTimer = null;
+let seenSuspectKeys = null;  // 이미 팝업 처리한 suspect 기록 key (null = 최초 로드 전)
 
 /* ---------- DOM 참조 ---------- */
 const gateGrid = document.getElementById('gates-grid');
@@ -47,6 +48,7 @@ function maskName(name) {
 // logs 세션 1건을 화면용 객체로 정규화
 function normalizeLog(v) {
   return {
+    key: `${v.Timestamp}_${v.Gate}_${v.Card_ID}`,  // suspect 신규 감지용 고유 key
     time: new Date(v.Timestamp),
     gate: Number(v.Gate),
     cardId: v.Card_ID,
@@ -174,11 +176,40 @@ async function pollLogs() {
       .map(normalizeLog)
       .sort((a, b) => b.time - a.time);
 
+    detectNewSuspects();
     updateStats();
     renderRecords();
     renderHistory();
   } catch (err) {
     console.error('logs 폴링 오류:', err);
+  }
+}
+
+/* ---------- logs 신규 suspect 감지 → 모달 팝업 ----------
+   logs에 Status:'suspect'인 기록이 새로 들어오면 팝업.
+   최초 로드 시점의 기존 suspect는 seen에 담아두고 팝업하지 않음.
+*/
+function detectNewSuspects() {
+  const suspects = allLogs.filter((l) => l.isSuspect);
+
+  // 최초 로드: 기존 suspect는 팝업 없이 seen 처리만
+  if (seenSuspectKeys === null) {
+    seenSuspectKeys = new Set(suspects.map((s) => s.key));
+    return;
+  }
+
+  // 새로 들어온 suspect (allLogs는 최신순이므로 앞쪽이 최신)
+  const fresh = suspects.filter((s) => !seenSuspectKeys.has(s.key));
+  fresh.forEach((s) => seenSuspectKeys.add(s.key));
+
+  if (fresh.length) {
+    const latest = fresh[0];  // 가장 최신 1건 팝업
+    showModal({
+      gate: latest.gate,
+      card: latest.cardTypeLabel,
+      reason: latest.reason || '정보 불일치',
+      time: latest.time
+    });
   }
 }
 
